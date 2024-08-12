@@ -31,7 +31,7 @@ def main():
     contacts.append(contact)
 
 
-    contacts_file = FileManager("contacts.csv")
+    contacts_file = FileManager("contacts.csv", "contacts")
     contacts_file.write(contacts)
     contacts2 = contacts_file.read()
 
@@ -50,7 +50,7 @@ def main():
     notes.append(note)
     notes.append(note)
 
-    notes_file = FileManager("notes.csv")
+    notes_file = FileManager("notes.csv", "notes")
     notes_file.write(notes)
     notes2 = notes_file.read()
 

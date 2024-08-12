@@ -14,9 +14,12 @@ from Records.Note import Note
 from Books.Notes import Notes
 
 class FileManager:
-    def __init__(self, file_name:str):
+    def __init__(self, file_name:str, data_type:str):
         if file_name.endswith(".csv"):
             self.file_name = file_name
+        else:
+            raise ValueError("Invalid file extension")
+        self.data_type = data_type
 
     def write(self, data: Contacts | Notes):
         with open(self.file_name, "w", newline="", encoding="utf-8") as file:
@@ -42,7 +45,7 @@ class FileManager:
         with open(self.file_name, "r", newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file)
             # Check if file contains contacts or notes
-            if "birthday" in reader.fieldnames:
+            if self.data_type == "contacts":
                 records = Contacts()
                 for row in reader:
                     contact = Contact(
@@ -53,7 +56,7 @@ class FileManager:
                         Birthday(row["birthday"])
                     )
                     records.append(contact)
-            elif "tags" in reader.fieldnames:
+            elif self.data_type == "notes":
                 records = Notes()
                 for row in reader:
                     note = Note(
