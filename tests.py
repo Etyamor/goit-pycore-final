@@ -12,9 +12,6 @@ from Fields.Tags import Tags
 from Records.Note import Note
 from Books.Notes import Notes
 
-from FileManager import FileManager
-
-
 def main():
     name = Name("Maksym Rutkovskyi")
     address = Address("Lviv, Ukraine")
@@ -30,13 +27,7 @@ def main():
     contacts.append(contact)
     contacts.append(contact)
 
-
-    contacts_file = FileManager("contacts.csv")
-    contacts_file.write(contacts)
-    contacts2 = contacts_file.read()
-
     print("Data from class:\n" + str(contacts))
-    print("Data from file:\n" + str(contacts2))
 
     title = Title("Title")
     note = Description("Note")
@@ -50,12 +41,7 @@ def main():
     notes.append(note)
     notes.append(note)
 
-    notes_file = FileManager("notes.csv")
-    notes_file.write(notes)
-    notes2 = notes_file.read()
-
     print("Data from class:\n" + str(notes))
-    print("Data from file:\n" + str(notes2))
 
 
 if __name__ == "__main__":
