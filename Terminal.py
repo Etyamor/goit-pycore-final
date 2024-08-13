@@ -1,3 +1,8 @@
+import datetime
+from typing import List
+from Books.Contacts import Contacts
+from Books.Notes import Notes
+
 class Terminal:
     def __init__(self):
         self.contacts = Contacts()
@@ -22,16 +27,18 @@ class Terminal:
                 print(self.show_contacts())
             elif command == "add-birthday":
                 print(self.add_birthday(*args))
-            elif command == "show-birthday":
-                print(self.show_birthday(*args))
-            elif command == "birthdays":
-                print(self.list_birthdays(int(args[0]) if args else 0))
+            elif command == "upcoming-birthdays":
+                print(self.upcoming_birthdays(int(args[0]) if args else 0))
             elif command == "show-contacts":
                 print(self.show_contacts())
             elif command == "show-notes":
                 print(self.show_notes())
             elif command == "add-note":
                 print(self.add_note(*args))
+            elif command == "search-note":
+                print(self.search_notes(*args))
+            elif command == "search-tag":
+                print(self.search_by_tag(*args))
             else:
                 print("Invalid command.")
 
@@ -47,7 +54,7 @@ class Terminal:
         self.contacts.append(contact)
 
         contacts_file = FileManager("contacts.csv", "contacts")
-        contacts_file.write(self.contacts)
+        contacts_file.write(self.contacts.data)
 
         return f"Contact '{name}' added and saved successfully."
 
@@ -61,46 +68,113 @@ class Terminal:
         self.notes.append(new_note)
 
         notes_file = FileManager("notes.csv", "notes")
-        notes_file.write(self.notes)
+        notes_file.write(self.notes.data)
 
         return f"Note '{title}' added and saved successfully."
- 
-    def search_contacts(self, name):
 
-        pass
-    
-    def search_notes(self, title):
-  
-        pass
-    
     def delete_contact(self, name):
+        contacts_file = FileManager("contacts.csv", "contacts")
+        contacts = contacts_file.read()
 
-        pass
-    
+        for contact in contacts:
+            if contact.name.value == name:
+                contacts.remove(contact)
+                contacts_file.write(contacts)
+                return f"Contact '{name}' deleted successfully."
+
+        return f"Contact '{name}' not found."
+
     def delete_note(self, title):
-  
-        pass
-    
-    def edit_contact(self, name, phone, email):
- 
-        pass
-    
-    def edit_note(self, title, content):
+        notes_file = FileManager("notes.csv", "notes")
+        notes = notes_file.read()
 
-        pass
-    
-    def list_birthdays(self, days):
+        for note in notes:
+            if note.title.value == title:
+                notes.remove(note)
+                notes_file.write(notes)
+                return f"Note '{title}' deleted successfully."
 
-        pass
+        return f"Note '{title}' not found."
     
-    def tag_note(self, title, tag):
-  
-        pass
-    
+    def search_contacts(self, name):
+        results = self.contacts.find_entity(name)
+        if results:
+            return "\n".join([f"Name: {contact.name.value}, Address: {contact.address.value}, "
+                              f"Phone: {contact.phone.value}, Email: {contact.email.value}, "
+                              f"Birthday: {contact.birthday.value}" for contact in results])
+        else:
+            return f"No contacts found with the name '{name}'."
+
+    def search_notes(self, title):
+        results = self.notes.find_entity(title)
+        if results:
+            return "\n".join([f"Title: {note.title.value}, Description: {note.description.value}, "
+                              f"Tags: {', '.join(note.tags.values)}" for note in results])
+        else:
+            return f"No notes found with the title '{title}'."
+
+    def edit_contact(self, name, phone=None, email=None):
+        contacts_file = FileManager("contacts.csv", "contacts")
+        contacts = contacts_file.read()
+
+        for contact in contacts:
+            if contact.name.value == name:
+                if phone:
+                    contact.phone = Phone(phone)
+                if email:
+                    contact.email = Email(email)
+                
+                contacts_file.write(contacts)
+                return f"Contact '{name}' updated successfully."
+
+        return f"Contact '{name}' not found."
+
+    def edit_note(self, title, content=None):
+        notes_file = FileManager("notes.csv", "notes")
+        notes = notes_file.read()
+
+        for note in notes:
+            if note.title.value == title:
+                if content:
+                    note.description = Description(content)
+
+                notes_file.write(notes)
+                return f"Note '{title}' updated successfully."
+
+        return f"Note '{title}' not found."
+
+    def upcoming_birthdays(self, days):
+        contacts_file = FileManager("contacts.csv", "contacts")
+        contacts = contacts_file.read()
+        
+        today = datetime.date.today()
+        upcoming = []
+
+        for contact in contacts:
+            bday = datetime.datetime.strptime(contact.birthday.value, "%Y-%m-%d").date()
+            next_birthday = datetime.date(today.year, bday.month, bday.day)
+            
+            if next_birthday < today:
+                next_birthday = datetime.date(today.year + 1, bday.month, bday.day)
+            
+            if (next_birthday - today).days <= days:
+                upcoming.append(f"Name: {contact.name.value}, Birthday: {contact.birthday.value}, Days away: {(next_birthday - today).days}")
+
+        if upcoming:
+            return "\n".join(upcoming)
+        else:
+            return "No upcoming birthdays within the specified range."
+
     def search_by_tag(self, tag):
-   
-        pass
-    
+        results = [f"Title: {note.title.value}, Description: {note.description.value}, "
+                   f"Tags: {', '.join(note.tags.values)}"
+                   for note in self.notes.data if tag.lower() in [t.lower() for t in note.tags.values]]
+
+        if results:
+            return "\n".join(results)
+        else:
+            return f"No notes found with the tag '{tag}'."
+
     def show_contacts(self):
         contacts_file = FileManager("contacts.csv", "contacts")
         contacts = contacts_file.read()
@@ -130,6 +204,8 @@ class Terminal:
         
         return notes_info
 
-terminal = Terminal()
-
-    
+    def parse_input(self, user_input):
+        parts = user_input.split()
+        command = parts[0]
+        args = parts[1:]
+        return command, args
