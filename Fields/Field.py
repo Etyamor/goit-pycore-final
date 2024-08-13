@@ -12,3 +12,6 @@ class Field:
 
     def __str__(self):
         return str(self._value)
+    
+    def __lt__(self, other) -> bool:
+        return self._value < other._value

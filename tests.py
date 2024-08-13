@@ -24,19 +24,39 @@ def main():
 
     contact = Contact(name, address, phone, email, birthday)
 
+    name = Name("Nikita Kojumyaka")
+    address = Address("Odesa, Ukraine")
+    phone = Phone("0931234567")
+    email = Email("nikita@gmail.com")
+    birthday = Birthday("17.11.1996")
+
+    contact2 = Contact(name, address, phone, email, birthday)
+
+    name = Name("Andriy Sviato")
+    address = Address("Kyiv, Ukraine")
+    phone = Phone("0931234567")
+    email = Email("andrii@gmail.com")
+    birthday = Birthday("17.11.1996")
+
+    contact3 = Contact(name, address, phone, email, birthday)
+
     contacts = Contacts()
 
     contacts.append(contact)
-    contacts.append(contact)
-    contacts.append(contact)
+    contacts.append(contact2)
+    contacts.append(contact3)
+
+    print("contacts sorted by name: ")
+    for con in contacts.sort("name"):
+        print(con)
 
 
     contacts_file = FileManager("contacts.csv", "contacts")
     contacts_file.write(contacts)
     contacts2 = contacts_file.read()
 
-    print("Data from class:\n" + str(contacts))
     print("Data from file:\n" + str(contacts2))
+    print("Data from class:\n" + str(contacts))
 
     title = Title("Title")
     note = Description("Note")
@@ -49,6 +69,9 @@ def main():
     notes.append(note)
     notes.append(note)
     notes.append(note)
+
+    for nor in notes.find_by_tag(["tag1", "tag2"]):
+        print(nor)
 
     notes_file = FileManager("notes.csv", "notes")
     notes_file.write(notes)
