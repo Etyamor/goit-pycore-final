@@ -46,6 +46,19 @@ def main():
     contacts.append(contact2)
     contacts.append(contact3)
 
+    is_edited = contacts.edit_contact('Maksym Rutkovskyi', 'phone', '0931234111')
+    if is_edited:
+        print("Контакт змінено успішно")
+    else:
+        print("Контакт не знайдено")
+
+    is_deleted = contacts.delete_contact('Maksym Rutkovskyi')
+    if is_deleted:
+        print("Контакт видалено успішно")
+    else:
+        print("Контакт не знайдено для видалення")
+
+
     print("contacts sorted by name: ")
     for con in contacts.sort("name"):
         print(con)

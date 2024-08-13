@@ -5,10 +5,11 @@ import re
 class Email(Field):
     def __init__(self, value):
         super().__init__(value)
+        self._value = value 
 
     @property
     def value(self):
-        return self.value
+        return self._value
     
     @value.setter
     def value(self, value):
