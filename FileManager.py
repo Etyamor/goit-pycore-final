@@ -51,7 +51,7 @@ class FileManager:
                     contact = Contact(
                         Name(row["name"]),
                         Address(row["address"]),
-                        Phone(row["phone"]),
+                        Phone(''.join(char for char in row["phone"] if char.isdigit())),
                         Email(row["email"]),
                         Birthday(row["birthday"])
                     )
