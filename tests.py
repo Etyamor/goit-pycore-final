@@ -50,6 +50,9 @@ def main():
     notes.append(note)
     notes.append(note)
 
+    for nor in notes.find_by_tag(["tag1", "tag2"]):
+        print(nor)
+
     notes_file = FileManager("notes.csv", "notes")
     notes_file.write(notes)
     notes2 = notes_file.read()
