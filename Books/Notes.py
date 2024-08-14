@@ -1,5 +1,5 @@
-from Books.Book import Book
 from typing import List
+from Books.Book import Book
 from Records.Note import Note
 
 
