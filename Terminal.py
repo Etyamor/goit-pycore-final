@@ -1,7 +1,9 @@
 import datetime
-from typing import List
-from Books.Contacts import Contacts
-from Books.Notes import Notes
+from FileManager import FileManager
+from Fields import *
+from Records import *
+from Books import *
+
 
 class Terminal:
     def __init__(self):
