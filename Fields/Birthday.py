@@ -1,5 +1,5 @@
-from Fields.Field import Field
 from datetime import datetime
+from Fields.Field import Field
 
 
 class Birthday(Field):

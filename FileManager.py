@@ -1,17 +1,8 @@
 import csv
-from Fields.Name import Name
-from Fields.Address import Address
-from Fields.Phone import Phone
-from Fields.Email import Email
-from Fields.Birthday import Birthday
-from Records.Contact import Contact
-from Books.Contacts import Contacts
+from Fields import *
+from Records import *
+from Books import *
 
-from Fields.Title import Title
-from Fields.Description import Description
-from Fields.Tags import Tags
-from Records.Note import Note
-from Books.Notes import Notes
 
 class FileManager:
     def __init__(self, file_name:str, data_type:str):
@@ -38,7 +29,6 @@ class FileManager:
                     writer.writerow(note.__dict__)
             else:
                 raise ValueError("Invalid data type")
-
 
     def read(self) -> Contacts | Notes:
         records = None 
