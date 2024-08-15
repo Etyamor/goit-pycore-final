@@ -40,3 +40,17 @@ python main.py
 | `get-contacts-upcoming-birthdays days`            | Get contacts with birthdays in n days |
 | `close`, `exit`                                   | Close application                     |
 | `help`                                            | Get list of commands                  |
+## FAQ
+### How to add contact if name or address containing more than 1 word?
+Use quotes to add contact with name or address containing more than 1 word. Example:
+
+`add-contact "John Doe" "New York" 1234567890 email@gmail.com 01.01.2000`
+
+### What is the data format for birthday?
+Use format `DD.MM.YYYY`. Example:
+
+`add-contact "John Doe" "New York" 1234567890 email@gmail.com 01.01.2000`
+
+### How to add note if I have more than 1 tag?
+Use quotes and separate tags by comma. Example:
+`add-note "My note" "Very important noe" "tag1, tag2"`
