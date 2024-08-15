@@ -1,7 +1,9 @@
 from typing import List
 from Books.Book import Book
 from Records.Note import Note
-
+from Fields.Tags import Tags
+from Fields.Title import Title
+from Fields.Description import Description
 
 class Notes(Book):
     def __str__(self):
@@ -10,12 +12,19 @@ class Notes(Book):
     def find_entity(self, text: str) -> List[Note]:
         return [record for record in self.data if text in record.note.value or text in record.title.value]
     
-    def find_by_tag(self, tags: List) -> List[Note]:
+    def find_by_tags(self, tags: List) -> List[Note]:
         result = []
-        for record in self.data:
+        for note in self.data:
             for tag in tags:
-                if tag in record.tags.value:
-                    result.append(record)
+                if tag in note.tags.value:
+                    result.append(note)
                     break
                 
         return result
+    
+    def delete_note(self, title: str):
+        for i, record in enumerate(self.data):
+            if record.title.value == title:
+                del self.data[i]
+                return True  
+        return False  

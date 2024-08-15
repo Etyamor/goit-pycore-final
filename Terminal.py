@@ -38,6 +38,20 @@ class Terminal:
                 print(self.show_notes())
             elif command == "delete-contact":
                 print(self.delete_contact(*args))
+            elif command == "delete-note":
+                print(self.delete_note(*args))
+            elif command == "edit-note":
+                print(self.edit_note(*args))
+            elif command == "find-note":
+                print(self.find_note(*args))
+            elif command == "add-tag":  
+                print(self.add_tag(*args))
+            elif command == "delete-tag":
+                print(self.delete_tag(*args))
+            elif command == "find-note-by-tag":
+                print(self.find_note_by_tag(*args))
+            elif command == "get-contacts-upcoming-birthdays":
+                print(self.show_contacts_with_upcoming_birthdays(*args))
             else:
                 print("Invalid command.")
 
@@ -61,14 +75,6 @@ class Terminal:
         ))
         return f"Contact '{name}' added successfully."
 
-    def add_note(self, title, note, tags):
-        self.notes.append(Note(
-            Title(title),
-            Description(note),
-            Tags(tags.split(','))
-        ))
-        return f"Note '{title}' added successfully."
-
     def show_contacts(self):
         return str(self.contacts)
 
@@ -80,3 +86,67 @@ class Terminal:
             return f"Contact '{name}' deleted successfully."
         else:
             return f"Contact '{name}' not found."
+
+    def add_note(self, title, note, tags):
+        self.notes.append(Note(
+            Title(title),
+            Description(note),
+            Tags(tags.split(','))
+        ))
+        return f"Note '{title}' added successfully."    
+    
+    def delete_note(self, title):
+        if self.notes.delete_note(title):
+            return f"Note '{title}' deleted successfully."
+        else:
+            return f"Note '{title}' not found."
+    
+    def edit_note(self, title, new_title, new_note, new_tags):
+        for i, note in enumerate(self.notes.data):
+            if note.title.value == title:
+                if new_title:
+                    note.title.value = new_title
+                if new_note:
+                    note.note.value = new_note
+                if new_tags:
+                    note.tags.value = new_tags.split(',')
+                return f"Note '{title}' updated successfully."
+        return f"Note '{title}' not found."
+    
+    def find_note(self, text):
+        notes = self.notes.find_entity(text)
+        if notes:
+            return ' \n'.join(str(note) for note in notes)
+        else:
+            return f"Note with text or title '{text}' not found."
+
+    def add_tag(self, note_title, tag):
+        for i, note in enumerate(self.notes.data):
+            if note.title.value == note_title:
+                note.tags.value.append(tag)
+                return f"Tag '{tag}' added to note '{note_title}'."
+        return f"Note '{note_title}' not found."
+
+    def delete_tag(self, title, tag):
+        for i, note in enumerate(self.notes.data):
+            if note.title.value == title:
+                if tag in note.tags.value:
+                    note.tags.value.remove(tag)
+                    return f"Tag '{tag}' removed from note '{title}'."
+                else:
+                    return f"Tag '{tag}' not found in note '{title}'."
+        return f"Note '{title}' not found."
+    
+    def find_note_by_tag(self, tags):
+        notes = self.notes.find_by_tags(tags.split(','))
+        if notes:
+             return ' \n'.join(str(note) for note in notes)
+        else:
+            return f"Note with tags '{tags}' not found."
+        
+    def show_contacts_with_upcoming_birthdays(self, days_from_today):
+        contacts = self.contacts.get_contacts_with_upcoming_birthdays(days_from_today)
+        if contacts:
+            return 'Contacts with upcoming birtdays: ' + '\n'.join(str(contact) for contact in contacts)
+        else:
+            return f"No upcoming birthdays in {days_from_today} days.."
