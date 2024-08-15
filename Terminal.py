@@ -1,4 +1,6 @@
-import os
+import shlex
+from prompt_toolkit import prompt
+from AutoCompleter import AutoCompleter
 from FileManager import FileManager
 from Fields import *
 from Records import *
@@ -35,6 +37,7 @@ class Terminal:
             "exit": ("Exit the program with no arguments", 0),
             "help": ("Display available commands with no arguments", 0)
         }
+        self.auto_completer = AutoCompleter(list(self.commands.keys()))
 
         self.call_terminal()
 
@@ -46,7 +49,11 @@ class Terminal:
     def call_terminal(self):
         self.display_commands()
         while True:
-            user_input = input("Enter a command: ")
+            user_input = prompt(
+                "Enter a command: ",
+                completer=self.auto_completer.get_completer(),
+                complete_while_typing=False
+            )
             command, args = self.parse_input(user_input)
 
             if command in ["close", "exit"]:
@@ -98,7 +105,7 @@ class Terminal:
             print(f"An error occurred: {e}")
 
     def parse_input(self, user_input):
-        parts = user_input.split()
+        parts = shlex.split(user_input)
         command = parts[0]
         args = parts[1:]
         return command, args
