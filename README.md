@@ -53,4 +53,4 @@ Use format `DD.MM.YYYY`. Example:
 
 ### How to add note if I have more than 1 tag?
 Use quotes and separate tags by comma. Example:
-`add-note "My note" "Very important noe" "tag1, tag2"`
+`add-note "My note" "Very important noe" "tag1,tag2"`
