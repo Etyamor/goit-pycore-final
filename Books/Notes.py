@@ -1,9 +1,7 @@
 from typing import List
 from Books.Book import Book
 from Records.Note import Note
-from Fields.Tags import Tags
-from Fields.Title import Title
-from Fields.Description import Description
+
 
 class Notes(Book):
     def __str__(self):

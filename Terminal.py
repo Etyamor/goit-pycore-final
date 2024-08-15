@@ -17,9 +17,34 @@ class Terminal:
             self.notes = self.notes_file.read()
         except FileNotFoundError:
             self.notes = Notes()
+
+        self.commands = {
+            "add-contact": ("Add a new contact with 5 arguments", 5),
+            "add-note": ("Add a new note with 3 arguments", 3),
+            "show-contacts": ("Show all contacts with no arguments", 0),
+            "show-notes": ("Show all notes with no arguments", 0),
+            "delete-contact": ("Delete a contact by name with 1 argument", 1),
+            "delete-note": ("Delete a note by title with 1 argument", 1),
+            "edit-note": ("Edit a note by title with 4 arguments", 4),
+            "find-note": ("Find a note by text or title with 1 argument", 1),
+            "find-note-by-tag": ("Find a note by tag with 1 argument", 1),
+            "add-tag": ("Add a tag to a note by title with 2 arguments", 2),
+            "delete-tag": ("Delete a tag from a note by title with 2 arguments", 2),
+            "get-contacts-upcoming-birthdays": ("Get contacts with upcoming birthdays with 1 argument", 1),
+            "close": ("Exit the program with no arguments", 0),
+            "exit": ("Exit the program with no arguments", 0),
+            "help": ("Display available commands with no arguments", 0)
+        }
+
         self.call_terminal()
 
+    def display_commands(self):
+        print("Available commands:")
+        for command, (description, _) in self.commands.items():
+            print(f"{command}: {description}")
+
     def call_terminal(self):
+        self.display_commands()
         while True:
             user_input = input("Enter a command: ")
             command, args = self.parse_input(user_input)
@@ -28,7 +53,22 @@ class Terminal:
                 self.store_data()
                 print("Good bye!")
                 break
-            elif command == "add-contact":
+            elif command == "help":
+                self.display_commands()
+            else:
+                self.execute_command(command, args)
+
+    def execute_command(self, command, args):
+        if command not in self.commands:
+            print("Invalid command.")
+            return
+
+        description, expected_args = self.commands[command]
+        try:
+            if len(args) != expected_args:
+                raise ValueError(f"'{command}' requires {expected_args} arguments, but {len(args)} were provided.")
+
+            if command == "add-contact":
                 print(self.add_contact(*args))
             elif command == "add-note":
                 print(self.add_note(*args))
@@ -44,7 +84,7 @@ class Terminal:
                 print(self.edit_note(*args))
             elif command == "find-note":
                 print(self.find_note(*args))
-            elif command == "add-tag":  
+            elif command == "add-tag":
                 print(self.add_tag(*args))
             elif command == "delete-tag":
                 print(self.delete_tag(*args))
@@ -52,8 +92,10 @@ class Terminal:
                 print(self.find_note_by_tag(*args))
             elif command == "get-contacts-upcoming-birthdays":
                 print(self.show_contacts_with_upcoming_birthdays(*args))
-            else:
-                print("Invalid command.")
+        except ValueError as ve:
+            print(ve)
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     def parse_input(self, user_input):
         parts = user_input.split()
@@ -120,6 +162,13 @@ class Terminal:
         else:
             return f"Note with text or title '{text}' not found."
 
+    def find_note_by_tag(self, tags):
+        notes = self.notes.find_by_tags(tags.split(','))
+        if notes:
+             return ' \n'.join(str(note) for note in notes)
+        else:
+            return f"Note with tags '{tags}' not found."
+
     def add_tag(self, note_title, tag):
         for i, note in enumerate(self.notes.data):
             if note.title.value == note_title:
@@ -136,17 +185,10 @@ class Terminal:
                 else:
                     return f"Tag '{tag}' not found in note '{title}'."
         return f"Note '{title}' not found."
-    
-    def find_note_by_tag(self, tags):
-        notes = self.notes.find_by_tags(tags.split(','))
-        if notes:
-             return ' \n'.join(str(note) for note in notes)
-        else:
-            return f"Note with tags '{tags}' not found."
         
     def show_contacts_with_upcoming_birthdays(self, days_from_today):
         contacts = self.contacts.get_contacts_with_upcoming_birthdays(days_from_today)
         if contacts:
-            return 'Contacts with upcoming birtdays: ' + '\n'.join(str(contact) for contact in contacts)
+            return 'Contacts with upcoming birtdays:\n' + str(contacts)
         else:
             return f"No upcoming birthdays in {days_from_today} days.."

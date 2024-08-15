@@ -1,8 +1,9 @@
 from typing import List, Union, Any
+from datetime import datetime, timedelta
 from Books.Book import Book
 from Records.Contact import Contact
-from Fields.Birthday import Birthday
-from datetime import datetime, timedelta
+
+
 class Contacts(Book):
     def __str__(self):
         return "Name, Address, Phone, Email, Birthday\n" + super().__str__()
@@ -41,10 +42,9 @@ class Contacts(Book):
                 self.data.remove(results[0])
                 return True
         return False
-    
 
     def get_contacts_with_upcoming_birthdays(self, days_from_today):
-        result = []
+        result = Contacts()
         date = datetime.today() + timedelta(days=int(days_from_today))
         for contact in self.data:
             if contact.birthday.value.day == date.day and contact.birthday.value.month == date.month: 
