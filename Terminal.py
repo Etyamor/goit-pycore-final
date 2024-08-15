@@ -27,7 +27,7 @@ class Terminal:
             "add-note": ("Add a new note with 3 arguments", 3),
             "show-contacts": ("Show all contacts with no arguments", 0),
             "show-notes": ("Show all notes with no arguments", 0),
-            "find-contact": ("Find a contact by parameter with 1 argument", 1),
+            "find-contacts": ("Find a contact by parameter with 1 argument", 1),
             "edit-contact": ("Edit a contact by name with 3 arguments", 3),
             "delete-contact": ("Delete a contact by name with 1 argument", 1),
             "delete-note": ("Delete a note by title with 1 argument", 1),
@@ -89,7 +89,7 @@ class Terminal:
                 print(self.show_notes())
             elif command == "delete-contact":
                 print(self.delete_contact(*args))
-            elif command == "find-contact":
+            elif command == "find-contacts":
                 print(self.find_contacts(*args))
             elif command == "edit-contact":
                 print(self.edit_contact(*args))
