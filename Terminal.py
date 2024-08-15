@@ -14,17 +14,21 @@ class Terminal:
             self.contacts = self.contacts_file.read()
         except FileNotFoundError:
             self.contacts = Contacts()
+        self.contacts: Contacts
         self.notes_file = FileManager("notes.csv", "notes")
         try:
             self.notes = self.notes_file.read()
         except FileNotFoundError:
             self.notes = Notes()
+        self.notes: Notes
 
         self.commands = {
             "add-contact": ("Add a new contact with 5 arguments", 5),
             "add-note": ("Add a new note with 3 arguments", 3),
             "show-contacts": ("Show all contacts with no arguments", 0),
             "show-notes": ("Show all notes with no arguments", 0),
+            "find-contacts": ("Find a contact by parameter with 1 argument", 1),
+            "edit-contact": ("Edit a contact by name with 3 arguments", 3),
             "delete-contact": ("Delete a contact by name with 1 argument", 1),
             "delete-note": ("Delete a note by title with 1 argument", 1),
             "edit-note": ("Edit a note by title with 4 arguments", 4),
@@ -85,6 +89,10 @@ class Terminal:
                 print(self.show_notes())
             elif command == "delete-contact":
                 print(self.delete_contact(*args))
+            elif command == "find-contacts":
+                print(self.find_contacts(*args))
+            elif command == "edit-contact":
+                print(self.edit_contact(*args))
             elif command == "delete-note":
                 print(self.delete_note(*args))
             elif command == "edit-note":
@@ -129,6 +137,22 @@ class Terminal:
 
     def show_notes(self):
         return str(self.notes)
+    
+    def find_contacts(self, parameter):
+        contacts = self.contacts.find_entity(parameter)
+        if contacts:
+            result = 'Contacts found:\n'
+            for contact in contacts:
+                result += str(contact) + '\n'
+            return result
+        else:
+            return f"Contacts with '{parameter}' not found."
+        
+    def edit_contact(self, name, field, new_value):
+        if self.contacts.edit_contact(name, field, new_value):
+            return f"Contact '{name}' edited successfully."
+        else:
+            return f"Contact '{name}' not found."
 
     def delete_contact(self, name):
         if self.contacts.delete_contact(name):

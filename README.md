@@ -30,6 +30,8 @@ python main.py
 | `add-note title description tags`                 | Add note                              |
 | `show-contacts`                                   | Show all contacts                     |
 | `show-notes`                                      | Show all notes                        |
+| `find-contacts {parameter}`                       | Find contacts by any parameter        |
+| `edit-contact name field newvalue`                | Edit contact                          |
 | `delete-contact name`                             | Delete contact by name                |
 | `delete-note title`                               | Delete note by title                  |
 | `edit-note title newtitle newdescription newtags` | Edit note                             |
