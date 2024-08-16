@@ -54,7 +54,7 @@ def main():
 
     deleted_contact = contacts.delete_contact('Roma')
     if deleted_contact:
-        print(f"Contact successfully delited: {deleted_contact}")
+        print(f"Contact successfully deleted: {deleted_contact}")
     else:
         print("Contact not found")
 
