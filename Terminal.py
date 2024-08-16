@@ -29,7 +29,7 @@ class Terminal:
             "delete-contact": ("Delete a contact by name with 1 argument (name)", 1),
             "delete-note": ("Delete a note by title with 1 argument (title)", 1),
             "delete-tag": ("Delete a tag from a note by title with 2 arguments (title tag)", 2),
-            "edit-contact": ("Edit a contact by name with 3 arguments (name oldfield newfield)", 3),
+            "edit-contact": ("Edit a contact by name with 3 arguments (name fieldname field)", 3),
             "edit-note": ("Edit a note by title with 4 arguments (title newtitle newdescription newtags)", 4),
             "find-contacts": ("Find a contact by parameter with 1 argument (field)", 1),
             "find-note": ("Find a note by text or title with 1 argument (field)", 1),
@@ -149,16 +149,18 @@ class Terminal:
             return f"Contacts with '{parameter}' not found."
         
     def edit_contact(self, name, field, new_value):
-        if self.contacts.edit_contact(name, field, new_value):
-            return f"Contact '{name}' edited successfully."
+        contact = self.contacts.edit_contact(name, field, new_value)
+        if contact:
+            return f"Contact '{contact}' edited successfully."
         else:
-            return f"Contact '{name}' not found."
+            return f"Contact '{contact}' not found."
 
     def delete_contact(self, name):
-        if self.contacts.delete_contact(name):
-            return f"Contact '{name}' deleted successfully."
+        contact = self.contacts.delete_contact(name)
+        if contact:
+            return f"Contact '{contact}' deleted successfully."
         else:
-            return f"Contact '{name}' not found."
+            return f"Contact '{contact}' not found."
 
     def add_note(self, title, note, tags):
         self.notes.append(Note(

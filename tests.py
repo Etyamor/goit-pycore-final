@@ -46,17 +46,17 @@ def main():
     contacts.append(contact2)
     contacts.append(contact3)
 
-    is_edited = contacts.edit_contact('Maksym Rutkovskyi', 'phone', '0931234111')
-    if is_edited:
-        print("Контакт змінено успішно")
+    edited_contact = contacts.edit_contact('Nikita Kojumyaka', 'phone', '0931234000')
+    if edited_contact:
+        print(f"Contact successfully edited: {edited_contact}")
     else:
-        print("Контакт не знайдено")
+        print("Contact not found")
 
-    is_deleted = contacts.delete_contact('Maksym Rutkovskyi')
-    if is_deleted:
-        print("Контакт видалено успішно")
+    deleted_contact = contacts.delete_contact('Roma')
+    if deleted_contact:
+        print(f"Contact successfully deleted: {deleted_contact}")
     else:
-        print("Контакт не знайдено для видалення")
+        print("Contact not found")
 
 
     print("contacts sorted by name: ")
