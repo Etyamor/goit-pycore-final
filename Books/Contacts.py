@@ -15,7 +15,7 @@ class Contacts(Book):
         :param text: Name or email to search for
         :return: List of matching contacts
         """
-        return [record for record in self.data if text in record.name.value or text == record.email.value]
+        return [record for record in self.data if text in record.name.value or text in record.email.value]
 
     def edit_contact(self, identifier: Union[str, int], field: str, new_value: Any) -> Optional[Contact]:
         """
