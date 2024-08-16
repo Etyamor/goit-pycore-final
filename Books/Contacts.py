@@ -9,23 +9,9 @@ class Contacts(Book):
         return "Name, Address, Phone, Email, Birthday\n" + super().__str__()
 
     def find_entity(self, text: str) -> List[Contact]:
-        """
-        Find contacts by name or email.
-        
-        :param text: Name or email to search for
-        :return: List of matching contacts
-        """
         return [record for record in self.data if text in record.name.value or text in record.email.value]
 
     def edit_contact(self, identifier: Union[str, int], field: str, new_value: Any) -> Optional[Contact]:
-        """
-        Edit a contact's specified field with a new value.
-        
-        :param identifier: Name or index of the contact
-        :param field: Field to be edited (e.g., 'name', 'address', 'phone', 'email', 'birthday')
-        :param new_value: New value for the specified field
-        :return: Edited contact if found and modified, None if contact not found
-        """
         contact = None
         
         if isinstance(identifier, int):

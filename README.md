@@ -32,7 +32,7 @@ python main.py
 | `delete-contact name`                             | Delete contact by name                |
 | `delete-note title`                               | Delete note by title                  |
 | `delete-tag title tag`                            | Delete tag from note                  |
-| `edit-contact name field newvalue`                | Edit contact                          |
+| `edit-contact name fieldname field`               | Edit contact                          |
 | `edit-note title newtitle newdescription newtags` | Edit note                             |
 | `find-contacts parameter`                         | Find contacts by any parameter        |
 | `find-note title`                                 | Find note by title                    |
