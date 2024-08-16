@@ -23,20 +23,20 @@ class Terminal:
         self.notes: Notes
 
         self.commands = {
-            "add-contact": ("Add a new contact with 5 arguments", 5),
-            "add-note": ("Add a new note with 3 arguments", 3),
+            "add-contact": ("Add a new contact with 5 arguments (name address phone email birthday(DD.MM.YYYY))", 5),
+            "add-note": ("Add a new note with 3 arguments (title description tags(separated by comma, no spaces))", 3),
+            "add-tag": ("Add a tag to a note by title with 2 arguments (title tag)", 2),
+            "delete-contact": ("Delete a contact by name with 1 argument (name)", 1),
+            "delete-note": ("Delete a note by title with 1 argument (title)", 1),
+            "delete-tag": ("Delete a tag from a note by title with 2 arguments (title tag)", 2),
+            "edit-contact": ("Edit a contact by name with 3 arguments (name oldfield newfield)", 3),
+            "edit-note": ("Edit a note by title with 4 arguments (title newtitle newdescription newtags)", 4),
+            "find-contacts": ("Find a contact by parameter with 1 argument (field)", 1),
+            "find-note": ("Find a note by text or title with 1 argument (field)", 1),
+            "find-note-by-tag": ("Find a note by tag with 1 argument (tag)", 1),
             "show-contacts": ("Show all contacts with no arguments", 0),
+            "show-contacts-upcoming-birthdays": ("Get contacts with upcoming birthdays with 1 argument (days)", 1),
             "show-notes": ("Show all notes with no arguments", 0),
-            "find-contacts": ("Find a contact by parameter with 1 argument", 1),
-            "edit-contact": ("Edit a contact by name with 3 arguments", 3),
-            "delete-contact": ("Delete a contact by name with 1 argument", 1),
-            "delete-note": ("Delete a note by title with 1 argument", 1),
-            "edit-note": ("Edit a note by title with 4 arguments", 4),
-            "find-note": ("Find a note by text or title with 1 argument", 1),
-            "find-note-by-tag": ("Find a note by tag with 1 argument", 1),
-            "add-tag": ("Add a tag to a note by title with 2 arguments", 2),
-            "delete-tag": ("Delete a tag from a note by title with 2 arguments", 2),
-            "get-contacts-upcoming-birthdays": ("Get contacts with upcoming birthdays with 1 argument", 1),
             "close": ("Exit the program with no arguments", 0),
             "exit": ("Exit the program with no arguments", 0),
             "help": ("Display available commands with no arguments", 0)
@@ -83,30 +83,30 @@ class Terminal:
                 print(self.add_contact(*args))
             elif command == "add-note":
                 print(self.add_note(*args))
-            elif command == "show-contacts":
-                print(self.show_contacts())
-            elif command == "show-notes":
-                print(self.show_notes())
-            elif command == "delete-contact":
-                print(self.delete_contact(*args))
-            elif command == "find-contacts":
-                print(self.find_contacts(*args))
-            elif command == "edit-contact":
-                print(self.edit_contact(*args))
-            elif command == "delete-note":
-                print(self.delete_note(*args))
-            elif command == "edit-note":
-                print(self.edit_note(*args))
-            elif command == "find-note":
-                print(self.find_note(*args))
             elif command == "add-tag":
                 print(self.add_tag(*args))
+            elif command == "delete-contact":
+                print(self.delete_contact(*args))
+            elif command == "delete-note":
+                print(self.delete_note(*args))
             elif command == "delete-tag":
                 print(self.delete_tag(*args))
+            elif command == "edit-contact":
+                print(self.edit_contact(*args))
+            elif command == "edit-note":
+                print(self.edit_note(*args))
+            elif command == "find-contacts":
+                print(self.find_contacts(*args))
+            elif command == "find-note":
+                print(self.find_note(*args))
             elif command == "find-note-by-tag":
                 print(self.find_note_by_tag(*args))
-            elif command == "get-contacts-upcoming-birthdays":
+            elif command == "show-contacts":
+                print(self.show_contacts())
+            elif command == "show-contacts-upcoming-birthdays":
                 print(self.show_contacts_with_upcoming_birthdays(*args))
+            elif command == "show-notes":
+                print(self.show_notes())
         except ValueError as ve:
             print(ve)
         except Exception as e:
@@ -220,6 +220,6 @@ class Terminal:
     def show_contacts_with_upcoming_birthdays(self, days_from_today):
         contacts = self.contacts.get_contacts_with_upcoming_birthdays(days_from_today)
         if contacts:
-            return 'Contacts with upcoming birtdays:\n' + str(contacts)
+            return 'Contacts with upcoming birthdays:\n' + str(contacts)
         else:
             return f"No upcoming birthdays in {days_from_today} days.."

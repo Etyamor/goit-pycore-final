@@ -28,18 +28,18 @@ python main.py
 |---------------------------------------------------|---------------------------------------|
 | `add-contact name address phone email birthday`   | Add contact                           |
 | `add-note title description tags`                 | Add note                              |
-| `show-contacts`                                   | Show all contacts                     |
-| `show-notes`                                      | Show all notes                        |
-| `find-contacts {parameter}`                       | Find contacts by any parameter        |
-| `edit-contact name field newvalue`                | Edit contact                          |
+| `add-tag title tag`                               | Add tag to note                       |
 | `delete-contact name`                             | Delete contact by name                |
 | `delete-note title`                               | Delete note by title                  |
+| `delete-tag title tag`                            | Delete tag from note                  |
+| `edit-contact name field newvalue`                | Edit contact                          |
 | `edit-note title newtitle newdescription newtags` | Edit note                             |
+| `find-contacts parameter`                         | Find contacts by any parameter        |
 | `find-note title`                                 | Find note by title                    |
 | `find-note-by-tag tag`                            | Find note by tag                      |
-| `add-tag title tag`                               | Add tag to note                       |
-| `delete-tag title tag`                            | Delete tag from note                  |
-| `get-contacts-upcoming-birthdays days`            | Get contacts with birthdays in n days |
+| `show-contacts`                                   | Show all contacts                     |
+| `show-contacts-upcoming-birthdays days`           | Get contacts with birthdays in n days |
+| `show-notes`                                      | Show all notes                        |
 | `close`, `exit`                                   | Close application                     |
 | `help`                                            | Get list of commands                  |
 ## FAQ
