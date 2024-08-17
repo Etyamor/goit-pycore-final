@@ -37,6 +37,7 @@ class Terminal:
             "show-contacts": ("Show all contacts with no arguments", 0),
             "show-contacts-upcoming-birthdays": ("Get contacts with upcoming birthdays with 1 argument (days)", 1),
             "show-notes": ("Show all notes with no arguments", 0),
+            "show-notes-by-tags": ("Show all notes sorted by tags with no arguments", 0),
             "close": ("Exit the program with no arguments", 0),
             "exit": ("Exit the program with no arguments", 0),
             "help": ("Display available commands with no arguments", 0)
@@ -107,6 +108,8 @@ class Terminal:
                 print(self.show_contacts_with_upcoming_birthdays(*args))
             elif command == "show-notes":
                 print(self.show_notes())
+            elif command == "show-notes-by-tags":
+                print(self.show_notes_by_tags())
         except ValueError as ve:
             print(ve)
         except Exception as e:
@@ -225,3 +228,11 @@ class Terminal:
             return 'Contacts with upcoming birthdays:\n' + str(contacts)
         else:
             return f"No upcoming birthdays in {days_from_today} days.."
+        
+    def show_notes_by_tags(self):
+        notes_by_tag = self.notes.sort_notes_by_tags()
+        result = "Notes sorted by tags:\n\n"
+        for tag, notes in notes_by_tag.items():
+            for note in notes:
+                result += f"- {note.title}: {note.note} (Tags: {', '.join(note.tags.value)})\n"
+        return result

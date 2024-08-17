@@ -40,6 +40,7 @@ python main.py
 | `show-contacts`                                   | Show all contacts                     |
 | `show-contacts-upcoming-birthdays days`           | Get contacts with birthdays in n days |
 | `show-notes`                                      | Show all notes                        |
+| `show-notes-by-tags`                              | Show notes sorted by tags             |
 | `close`, `exit`                                   | Close application                     |
 | `help`                                            | Get list of commands                  |
 ## FAQ
