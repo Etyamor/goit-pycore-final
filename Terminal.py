@@ -1,11 +1,22 @@
 import shlex
 from prompt_toolkit import prompt
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.shortcuts import print_formatted_text
 from AutoCompleter import AutoCompleter
 from FileManager import FileManager
 from Fields import *
 from Records import *
 from Books import *
 
+def handle_errors(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError as ve:
+            print_formatted_text(HTML(f'<ansired>{str(ve)}</ansired>'))
+        except Exception as e:
+            print_formatted_text(HTML(f'<ansired>An error occurred: {e}</ansired>'))
+    return wrapper
 
 class Terminal:
     def __init__(self):
@@ -46,15 +57,16 @@ class Terminal:
         self.call_terminal()
 
     def display_commands(self):
-        print("Available commands:")
+        print_formatted_text(self.colored_text('Available commands:', 'ansibrightblue'))
         for command, (description, _) in self.commands.items():
-            print(f"{command}: {description}")
+            print_formatted_text(self.colored_text(f'  {command} - {description}', 'ansibrightblue'))
 
+    @handle_errors
     def call_terminal(self):
         self.display_commands()
         while True:
             user_input = prompt(
-                "Enter a command: ",
+                self.colored_text('Enter a command: ', 'ansibrightgreen'),
                 completer=self.auto_completer.get_completer(),
                 complete_while_typing=False
             )
@@ -62,55 +74,55 @@ class Terminal:
 
             if command in ["close", "exit"]:
                 self.store_data()
-                print("Good bye!")
+                print_formatted_text(self.colored_text('Good bye!', 'ansigreen'))
                 break
             elif command == "help":
                 self.display_commands()
             else:
                 self.execute_command(command, args)
 
+    @handle_errors
     def execute_command(self, command, args):
         if command not in self.commands:
-            print("Invalid command.")
+            print_formatted_text(self.colored_text('Invalid command.', 'ansired'))
             return
 
         description, expected_args = self.commands[command]
-        try:
-            if len(args) != expected_args:
-                raise ValueError(f"'{command}' requires {expected_args} arguments, but {len(args)} were provided.")
+        if len(args) != expected_args:
+            raise ValueError(f"'{command}' requires {expected_args} arguments, but {len(args)} were provided.")
 
-            if command == "add-contact":
-                print(self.add_contact(*args))
-            elif command == "add-note":
-                print(self.add_note(*args))
-            elif command == "add-tag":
-                print(self.add_tag(*args))
-            elif command == "delete-contact":
-                print(self.delete_contact(*args))
-            elif command == "delete-note":
-                print(self.delete_note(*args))
-            elif command == "delete-tag":
-                print(self.delete_tag(*args))
-            elif command == "edit-contact":
-                print(self.edit_contact(*args))
-            elif command == "edit-note":
-                print(self.edit_note(*args))
-            elif command == "find-contacts":
-                print(self.find_contacts(*args))
-            elif command == "find-note":
-                print(self.find_note(*args))
-            elif command == "find-note-by-tag":
-                print(self.find_note_by_tag(*args))
-            elif command == "show-contacts":
-                print(self.show_contacts())
-            elif command == "show-contacts-upcoming-birthdays":
-                print(self.show_contacts_with_upcoming_birthdays(*args))
-            elif command == "show-notes":
-                print(self.show_notes())
-        except ValueError as ve:
-            print(ve)
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        result = None
+        if command == "add-contact":
+            result = self.add_contact(*args)
+        elif command == "add-note":
+            result = self.add_note(*args)
+        elif command == "add-tag":
+            result = self.add_tag(*args)
+        elif command == "delete-contact":
+            result = self.delete_contact(*args)
+        elif command == "delete-note":
+            result = self.delete_note(*args)
+        elif command == "delete-tag":
+            result = self.delete_tag(*args)
+        elif command == "edit-contact":
+            result = self.edit_contact(*args)
+        elif command == "edit-note":
+            result = self.edit_note(*args)
+        elif command == "find-contacts":
+            result = self.find_contacts(*args)
+        elif command == "find-note":
+            result = self.find_note(*args)
+        elif command == "find-note-by-tag":
+            result = self.find_note_by_tag(*args)
+        elif command == "show-contacts":
+            result = self.show_contacts()
+        elif command == "show-contacts-upcoming-birthdays":
+            result = self.show_contacts_with_upcoming_birthdays(*args)
+        elif command == "show-notes":
+            result = self.show_notes()
+
+        if result:
+            print_formatted_text(result)
 
     def parse_input(self, user_input):
         parts = shlex.split(user_input)
@@ -118,10 +130,12 @@ class Terminal:
         args = parts[1:]
         return command, args
 
+    @handle_errors
     def store_data(self):
         self.contacts_file.write(self.contacts)
         self.notes_file.write(self.notes)
 
+    @handle_errors
     def add_contact(self, name, address, phone, email, birthday):
         self.contacts.append(Contact(
             Name(name),
@@ -130,52 +144,60 @@ class Terminal:
             Email(email),
             Birthday(birthday)
         ))
-        return f"Contact '{name}' added successfully."
+        return self.colored_text(f"Contact '{name}' added successfully.", 'ansigreen')
 
+    @handle_errors
     def show_contacts(self):
         return str(self.contacts)
 
+    @handle_errors
     def show_notes(self):
         return str(self.notes)
     
+    @handle_errors
     def find_contacts(self, parameter):
         contacts = self.contacts.find_entity(parameter)
         if contacts:
             result = 'Contacts found:\n'
             for contact in contacts:
                 result += str(contact) + '\n'
-            return result
+            return self.colored_text(result, 'ansigreen')
         else:
-            return f"Contacts with '{parameter}' not found."
+            return self.colored_text(f"Contacts with '{parameter}' not found.", 'ansiyellow')
         
+    @handle_errors
     def edit_contact(self, name, field, new_value):
         contact = self.contacts.edit_contact(name, field, new_value)
         if contact:
-            return f"Contact '{contact}' edited successfully."
+            return self.colored_text(f"Contact '{contact}' edited successfully.", 'ansigreen')
         else:
-            return f"Contact '{contact}' not found."
+            return self.colored_text(f"Contact '{name}' not found.", 'ansiyellow')
 
+    @handle_errors
     def delete_contact(self, name):
         contact = self.contacts.delete_contact(name)
         if contact:
-            return f"Contact '{contact}' deleted successfully."
+            return self.colored_text(f"Contact '{contact}' deleted successfully.", 'ansigreen')
         else:
-            return f"Contact '{contact}' not found."
+            return self.colored_text(f"Contact '{name}' not found.", 'ansiyellow')
 
+    @handle_errors
     def add_note(self, title, note, tags):
         self.notes.append(Note(
             Title(title),
             Description(note),
             Tags(tags.split(','))
         ))
-        return f"Note '{title}' added successfully."    
+        return self.colored_text(f"Note '{title}' added successfully.", 'ansigreen')
     
+    @handle_errors
     def delete_note(self, title):
         if self.notes.delete_note(title):
-            return f"Note '{title}' deleted successfully."
+            return self.colored_text(f"Note '{title}' deleted successfully.", 'ansigreen')
         else:
-            return f"Note '{title}' not found."
+            return self.colored_text(f"Note '{title}' not found.", 'ansiyellow')
     
+    @handle_errors
     def edit_note(self, title, new_title, new_note, new_tags):
         for i, note in enumerate(self.notes.data):
             if note.title.value == title:
@@ -185,43 +207,51 @@ class Terminal:
                     note.note.value = new_note
                 if new_tags:
                     note.tags.value = new_tags.split(',')
-                return f"Note '{title}' updated successfully."
-        return f"Note '{title}' not found."
+                return self.colored_text(f"Note '{title}' updated successfully.", 'ansigreen')
+        return self.colored_text(f"Note '{title}' not found.", 'ansiyellow')
     
+    @handle_errors
     def find_note(self, text):
         notes = self.notes.find_entity(text)
         if notes:
-            return ' \n'.join(str(note) for note in notes)
+            return self.colored_text(' \n'.join(str(note) for note in notes), 'ansigreen')
         else:
-            return f"Note with text or title '{text}' not found."
+            return self.colored_text(f"Note with text or title '{text}' not found.", 'ansiyellow')
 
+    @handle_errors
     def find_note_by_tag(self, tags):
         notes = self.notes.find_by_tags(tags.split(','))
         if notes:
-             return ' \n'.join(str(note) for note in notes)
+            return self.colored_text(' \n'.join(str(note) for note in notes), 'ansigreen')
         else:
-            return f"Note with tags '{tags}' not found."
+            return self.colored_text(f"Note with tags '{tags}' not found.", 'ansiyellow')
 
+    @handle_errors
     def add_tag(self, note_title, tag):
         for i, note in enumerate(self.notes.data):
             if note.title.value == note_title:
                 note.tags.value.append(tag)
-                return f"Tag '{tag}' added to note '{note_title}'."
-        return f"Note '{note_title}' not found."
+                return self.colored_text(f"Tag '{tag}' added to note '{note_title}'.", 'ansigreen')
+        return self.colored_text(f"Note '{note_title}' not found.", 'ansiyellow')
 
+    @handle_errors
     def delete_tag(self, title, tag):
         for i, note in enumerate(self.notes.data):
             if note.title.value == title:
                 if tag in note.tags.value:
                     note.tags.value.remove(tag)
-                    return f"Tag '{tag}' removed from note '{title}'."
+                    return self.colored_text(f"Tag '{tag}' removed from note '{title}'.", 'ansigreen')
                 else:
-                    return f"Tag '{tag}' not found in note '{title}'."
-        return f"Note '{title}' not found."
+                    return self.colored_text(f"Tag '{tag}' not found in note '{title}'.", 'ansiyellow')
+        return self.colored_text(f"Note '{title}' not found.", 'ansiyellow')
         
+    @handle_errors
     def show_contacts_with_upcoming_birthdays(self, days_from_today):
         contacts = self.contacts.get_contacts_with_upcoming_birthdays(days_from_today)
         if contacts:
-            return 'Contacts with upcoming birthdays:\n' + str(contacts)
+            return self.colored_text('Contacts with upcoming birthdays:\n' + str(contacts), 'ansigreen')
         else:
-            return f"No upcoming birthdays in {days_from_today} days.."
+            return self.colored_text(f"No upcoming birthdays in {days_from_today} days.", 'ansiyellow')
+        
+    def colored_text(self, text, color):
+        return HTML(f'<{color}>{text}</{color}>')
