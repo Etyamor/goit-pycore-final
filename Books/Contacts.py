@@ -6,7 +6,23 @@ from Records.Contact import Contact
 
 class Contacts(Book):
     def __str__(self):
-        return "Name, Address, Phone, Email, Birthday\n" + super().__str__()
+        header = ['Name', 'Address', 'Phone', 'Email', 'Birthday']
+        max_len = [len(header[0]), len(header[1]), len(header[2]), len(header[3]), len(header[4])]
+        for record in self.data:
+            max_len[0] = max(max_len[0], len(record.name.value))
+            max_len[1] = max(max_len[1], len(record.address.value))
+            max_len[2] = max(max_len[2], len(record.phone.value))
+            max_len[3] = max(max_len[3], len(record.email.value))
+            max_len[4] = max(max_len[4], len(str(record.birthday)))
+        header = [header[0].ljust(max_len[0]), header[1].ljust(max_len[1]), header[2].ljust(max_len[2]),
+                  header[3].ljust(max_len[3]), header[4].ljust(max_len[4])]
+        result = " | ".join(header) + "\n"
+        result += "-" * (sum(max_len) + 3 * len(max_len) - 2) + "\n"
+        for record in self.data:
+            result += record.name.value.ljust(max_len[0]) + " | " + record.address.value.ljust(max_len[1]) + " | " + \
+                      record.phone.value.ljust(max_len[2]) + " | " + record.email.value.ljust(max_len[3]) + " | " + \
+                      str(record.birthday).ljust(max_len[4]) + "\n"
+        return result
 
     def find_entity(self, text: str) -> List[Contact]:
         return [record for record in self.data if text in record.name.value or text in record.email.value]

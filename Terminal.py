@@ -48,6 +48,7 @@ class Terminal:
             "show-contacts": ("Show all contacts with no arguments", 0),
             "show-contacts-upcoming-birthdays": ("Get contacts with upcoming birthdays with 1 argument (days)", 1),
             "show-notes": ("Show all notes with no arguments", 0),
+            "show-notes-by-tags": ("Show all notes sorted by tags with no arguments", 0),
             "close": ("Exit the program with no arguments", 0),
             "exit": ("Exit the program with no arguments", 0),
             "help": ("Display available commands with no arguments", 0)
@@ -120,12 +121,17 @@ class Terminal:
             result = self.show_contacts_with_upcoming_birthdays(*args)
         elif command == "show-notes":
             result = self.show_notes()
+        elif command == "show-notes-by-tags":
+            result = self.show_notes_by_tags()
 
         if result:
             print_formatted_text(result)
 
+    @handle_errors
     def parse_input(self, user_input):
         parts = shlex.split(user_input)
+        if not parts:
+            return None, []
         command = parts[0]
         args = parts[1:]
         return command, args
@@ -255,3 +261,11 @@ class Terminal:
         
     def colored_text(self, text, color):
         return HTML(f'<{color}>{text}</{color}>')
+        
+    def show_notes_by_tags(self):
+        notes_by_tag = self.notes.sort_notes_by_tags()
+        result = "Notes sorted by tags:\n\n"
+        for tag, notes in notes_by_tag.items():
+            for note in notes:
+                result += f"- {note.title}: {note.note} (Tags: {', '.join(note.tags.value)})\n"
+        return result
