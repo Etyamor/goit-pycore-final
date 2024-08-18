@@ -26,3 +26,19 @@ class Notes(Book):
                 del self.data[i]
                 return True  
         return False  
+    
+    def sort_notes_by_tags(self):
+        all_tags = set()
+        for note in self.data:
+            all_tags.update(note.tags.value)
+        
+        sorted_tags = sorted(all_tags)
+        
+        notes_by_tag = {tag: [] for tag in sorted_tags}
+        
+        for note in self.data:
+            if note.tags.value:
+                first_tag = sorted(note.tags.value)[0] 
+                notes_by_tag[first_tag].append(note)
+        
+        return notes_by_tag
