@@ -127,8 +127,11 @@ class Terminal:
         if result:
             print_formatted_text(result)
 
+    @handle_errors
     def parse_input(self, user_input):
         parts = shlex.split(user_input)
+        if not parts:
+            return None, []
         command = parts[0]
         args = parts[1:]
         return command, args

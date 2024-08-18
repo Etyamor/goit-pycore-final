@@ -5,7 +5,20 @@ from Records.Note import Note
 
 class Notes(Book):
     def __str__(self):
-        return "Title, Note, Tags\n" + super().__str__()
+        #make good looking format
+        header = ['Title', 'Note', 'Tags']
+        #make equal length of each column
+        max_len = [len(header[0]), len(header[1]), len(header[2])]
+        for record in self.data:
+            max_len[0] = max(max_len[0], len(record.title.value))
+            max_len[1] = max(max_len[1], len(record.note.value))
+            max_len[2] = max(max_len[2], len(", ".join(record.tags.value)))
+        header = [header[0].ljust(max_len[0]), header[1].ljust(max_len[1]), header[2].ljust(max_len[2])]
+        result = " | ".join(header) + "\n"
+        result += "-" * (sum(max_len) + 3 * len(max_len) - 2) + "\n"
+        for record in self.data:
+            result += record.title.value.ljust(max_len[0]) + " | " + record.note.value.ljust(max_len[1]) + " | " + ", ".join(record.tags.value).ljust(max_len[2]) + "\n"
+        return result
     
     def find_entity(self, text: str) -> List[Note]:
         return [record for record in self.data if text in record.note.value or text in record.title.value]
